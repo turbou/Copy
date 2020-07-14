@@ -1,0 +1,38 @@
+    $.ajax({
+      url: '{% url 'shift_dayoff' %}',
+      type: 'POST',
+      contentType: 'application/json',
+      dataType: 'json',
+      data: JSON.stringify(dayoff_dict),
+      beforeSend: function(xhr, settings) {
+        if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+            xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
+        }
+      },
+      success: function(data) {
+        var type = 'success';
+        if (data['success'] != 'true') {
+            type = 'error';
+        }
+        new Noty({
+          type: type,
+          layout: 'topCenter',
+          text: data['messages'],
+          theme: 'relax',
+          timeout: 500,
+        }).show();
+      },
+      error: function(e) {
+        new Noty({
+          type: 'error',
+          layout: 'topCenter',
+          text: e.responseText,
+          theme: 'relax',
+        }).show();
+      }
+    });
+
+  function csrfSafeMethod(method) {
+    // these HTTP methods do not require CSRF protection
+    return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+  }
