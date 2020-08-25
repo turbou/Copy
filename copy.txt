@@ -22,6 +22,7 @@ class HorizontalRadioSelect(forms.RadioSelect):
     
 contract_type = forms.ChoiceField(label='契約種別', initial='temp', widget=HorizontalRadioSelect(), choices=CONTRACT_TYPE_CHOICES, required=True)
 
+from django.template.defaultfilters import stringfilter
 @register.filter(is_safe=False)
 @stringfilter
 def endswith(value, suffix):
