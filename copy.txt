@@ -27,3 +27,12 @@ from django.template.defaultfilters import stringfilter
 @stringfilter
 def endswith(value, suffix):
     return value.endswith(suffix)
+
+    def changelist_view(self, request, extra_context=None):
+        if 'HTTP_REFERER' in request.META:
+            http_referer = request.META['HTTP_REFERER']
+            if not '/txskyk1090/' in http_referer:
+                request.GET = request.GET.copy()
+                request.GET.update({'keiyaku_sts': '06'})
+        return super().changelist_view(request, extra_context=extra_context)
+        
