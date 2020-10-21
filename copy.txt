@@ -1,38 +1,7 @@
-    def get_search_results(self, request, queryset, search_term):
-        queryset, use_distinct = super().get_search_results(request, queryset, search_term)
-        if ':' in search_term:
-            array = search_term.split(':')
-            code = array[0]
-            name = ''.join(array[1:])
-            if len(array) > 1:
-                kok = SampleObj.objects.filter(cd=code, name=name).first()
-                if kok:
-                    queryset |= self.model.objects.filter(kokyaku=kok.id)
-        return queryset, use_distinct
-
-{% with id=widget.attrs.id %}
-<ul{% if id %} id="{{ id }}"{% endif %}{% if widget.attrs.class %} class="{{ widget.attrs.class }}"{% endif %}>{% for group, options, index in widget.optgroups %}{% if group %}
-  <li>{{ group }}<ul{% if id %} id="{{ id }}_{{ index }}"{% endif %}>{% endif %}{% for option in options %}
-    <li style="display: inline-block; margin-right: 10px;">{% include option.template_name with widget=option %}</li>{% endfor %}{% if group %}
-  </ul></li>{% endif %}{% endfor %}
-</ul>{% endwith %}
-
-class HorizontalRadioSelect(forms.RadioSelect):
-    template_name = 'horizontal_radio.html'
-    
-contract_type = forms.ChoiceField(label='契約種別', initial='temp', widget=HorizontalRadioSelect(), choices=CONTRACT_TYPE_CHOICES, required=True)
-
-from django.template.defaultfilters import stringfilter
-@register.filter(is_safe=False)
-@stringfilter
-def endswith(value, suffix):
-    return value.endswith(suffix)
-
-    def changelist_view(self, request, extra_context=None):
-        if 'HTTP_REFERER' in request.META:
-            http_referer = request.META['HTTP_REFERER']
-            if not '/txskyk1090/' in http_referer:
-                request.GET = request.GET.copy()
-                request.GET.update({'keiyaku_sts': '06'})
-        return super().changelist_view(request, extra_context=extra_context)
+def change_view(self, request, object_id, form_url='', extra_context=None):
+        if isinstance(res, TemplateResponse):
+            ctx = res.context_data
+            ctx.update({'form_url':''})
+            res.context_data = ctx
+        return res
         
