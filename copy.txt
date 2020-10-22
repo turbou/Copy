@@ -86,3 +86,10 @@ def contracted_service_ids(request):
     contracted_service_ids = []
     contracted_service_id_dict = {}
     if kokyaku_id:
+
+    return HttpResponse(json.dumps({
+        'success': 'true',
+        'messages': '成功しました。',
+        'contracted_service_ids': contracted_service_ids,
+        'contracted_service_id_dict': contracted_service_id_dict
+    }), content_type='application/json')
