@@ -1,21 +1,4 @@
-from django.urls import include, path
-
-from contract import views
-
-urlpatterns = [
-    path('contracted_service_ids/', views.contracted_service_ids, name='contracted_service_ids'),
-]
-
-from django.contrib import admin
-from django.urls import path
-from django.conf.urls import include, url
-from django.conf import settings
-from django.conf.urls.static import static
-
-urlpatterns = [
-    path('admin/', admin.site.urls),
-    url(r'^_nested_admin/', include('nested_admin.urls')),
-    path('contract/', include('contract.urls')),
-    path('admin/monthly/', include('monthly.urls')),
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-
+function csrfSafeMethod(method) {
+  // these HTTP methods do not require CSRF protection
+  return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+}
