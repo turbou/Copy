@@ -66,3 +66,23 @@ $(document).on('click', '[id="edit_service"]', function(event) {
   });
   $('#servicemodal').modal('show');
 });
+
+from django.shortcuts import render
+from django.http import HttpResponse, HttpResponseNotFound
+from django.views.decorators.http import require_http_methods
+from django.contrib.auth.decorators import login_required
+from django.views.decorators.csrf import ensure_csrf_cookie
+from django.db.models import Q, F
+from django.utils import dateformat
+
+import json
+
+@require_http_methods(["POST"])
+@login_required
+@ensure_csrf_cookie
+def contracted_service_ids(request):
+    json_data = json.loads(request.body)
+    kokyaku_id = json_data['kokyaku_id']
+    contracted_service_ids = []
+    contracted_service_id_dict = {}
+    if kokyaku_id:
