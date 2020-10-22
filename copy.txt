@@ -5,3 +5,64 @@ def change_view(self, request, object_id, form_url='', extra_context=None):
             res.context_data = ctx
         return res
         
+var submit_button = null;
+$(document).on('click', '[id="edit_service"]', function(event) {
+  submit_button = $(this);
+  event.preventDefault();
+  var post_data = {};
+  post_data['kokyaku_id'] = $("#id_kokyaku").val();
+  $.ajax({
+    url: '{% url 'contracted_service_ids' %}',
+    type: 'POST',
+    contentType: 'application/json',
+    dataType: 'json',
+    data: JSON.stringify(post_data),
+    beforeSend: function(xhr, settings) {
+      if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+        xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
+      }
+    },
+    success: function(data) {
+      cs_ids = data['contracted_service_ids'];
+      cs_id_dict = data['contracted_service_id_dict'];
+      // クリア
+      $('#service_filter').val("");
+      $('#modal_available_services').empty();
+      $('#modal_selected_services').empty();
+
+      var keys = Object.keys(available_srv_dict);
+      for (var i = 0; i < keys.length; i++) {
+        var val = available_srv_dict[keys[i]].value;
+        var txt = available_srv_dict[keys[i]].text;
+        $option = $('<option>').val(val).text(txt);
+        if (cs_ids.indexOf(parseInt(val, 10)) >= 0) {
+          var riyo_date_fr = cs_id_dict[parseInt(val, 10)];
+          var befTxt = txt;
+          //var aftTxt = befTxt.replace('★', '').replace(/^(\d{5}:)/, '$1★' + riyo_date_fr + ' ');
+          var aftTxt = befTxt.replace(/^([\s\S]{5}:)/, '$1★' + riyo_date_fr + ' ');
+          $option = $('<option>').val(val).text(aftTxt);
+        }
+        $('#modal_available_services').append($option);
+      }
+
+      var keys = Object.keys(selected_srv_dict);
+      for (var i = 0; i < keys.length; i++) {
+        var val = selected_srv_dict[keys[i]].value;
+        var txt = selected_srv_dict[keys[i]].text;
+        $option = $('<option>').val(val).text(txt);
+        if (cs_ids.indexOf(parseInt(val, 10)) >= 0) {
+          var riyo_date_fr = cs_id_dict[parseInt(val, 10)];
+          var befTxt = txt;
+          //var aftTxt = befTxt.replace('★', '').replace(/^(\d{5}:)/, '$1★' + riyo_date_fr + ' ');
+          var aftTxt = befTxt.replace(/^([\s\S]{5}:)/, '$1★' + riyo_date_fr + ' ');
+          $option = $('<option>').val(val).text(aftTxt);
+        }
+        $('#modal_selected_services').append($option);
+      }
+    },
+    error: function(e) {
+      console.log(e);
+    }
+  });
+  $('#servicemodal').modal('show');
+});
